@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17324d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>GainTrack — Nutrition & Muscle Gain</title>
+<style>
+:root{--navy:#17324d;--blue:#2b6cb0;--sky:#eaf2f8;--green:#20845a;--orange:#c77822;--ink:#1d2935;--muted:#657484;--line:#dce4eb;--bg:#f4f7fa;--white:#fff;--red:#b54747}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,#17324d,#245b78);color:white;padding:22px 18px 25px;border-radius:0 0 24px 24px}
+.headerrow{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:22px;font-weight:850;letter-spacing:-.5px}.tag{font-size:12px;opacity:.85;margin-top:3px}.badge{background:#ffffff20;border:1px solid #ffffff40;padding:7px 10px;border-radius:99px;font-size:11px;white-space:nowrap}
+main{max-width:720px;margin:auto;padding:14px 13px 90px}.datebar{display:flex;justify-content:space-between;align-items:center;margin:3px 2px 12px;color:var(--muted);font-size:13px}
+.card{background:white;border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 3px 12px #19354b08}
+h2{font-size:16px;margin:0 0 12px;color:var(--navy)}h3{font-size:14px;margin:0 0 7px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:#f7fafc;border-radius:13px;padding:12px}.stat .label{font-size:11px;color:var(--muted)}.stat .value{font-size:22px;font-weight:800;margin:3px 0;color:var(--navy)}.stat .sub{font-size:11px;color:var(--muted)}
+.progress{height:8px;background:#e8edf2;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;width:0;background:var(--green);border-radius:99px;transition:width .2s}
+.smallbar{height:6px;margin-top:7px}.kcalbar{background:var(--orange)}.proteinbar{background:var(--blue)}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+label{display:block;font-size:12px;font-weight:650;color:#435466;margin:10px 0 5px}
+input,select,textarea,button{font:inherit}input,select,textarea{width:100%;border:1px solid #cfd9e2;background:white;border-radius:10px;padding:11px 10px;color:var(--ink);outline-color:#6aa4d8}
+input[type=file]{padding:8px;font-size:12px}textarea{min-height:62px;resize:vertical}
+button{border:0;border-radius:11px;padding:12px 14px;font-weight:750;cursor:pointer}
+.primary{background:var(--navy);color:white;width:100%;margin-top:13px}.secondary{background:var(--sky);color:var(--navy)}.danger{background:#fff0f0;color:var(--red);padding:8px 10px;font-size:12px}
+.foodpreview{display:none;max-width:100%;max-height:190px;object-fit:contain;border-radius:12px;margin-top:9px;background:#f5f7f9}
+.meal{border:1px solid var(--line);border-radius:12px;padding:11px;margin-top:9px;display:flex;gap:10px;align-items:flex-start}.thumb{width:55px;height:55px;object-fit:cover;border-radius:9px;background:#eef2f5;flex-shrink:0}.mealbody{flex:1;min-width:0}.mealname{font-weight:750;font-size:13px}.meta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}.mealactions{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:10px;padding:4px 7px;border-radius:99px;background:#edf5ef;color:#226444;display:inline-block;margin:3px 2px 0 0}
+.empty{font-size:13px;color:var(--muted);padding:15px 5px;text-align:center}
+.note{font-size:11px;line-height:1.45;color:var(--muted)}.tabs{display:flex;gap:7px;overflow:auto;margin:0 0 12px}.tab{white-space:nowrap;padding:9px 12px;background:#e8eef4;color:var(--navy);font-size:12px}.tab.active{background:var(--navy);color:white}
+.panel{display:none}.panel.active{display:block}
+.weightentry{display:flex;gap:8px;align-items:center;margin-top:8px}.weightentry span{flex:1;font-size:12px}.weightentry b{font-size:13px}
+footer{font-size:10px;color:var(--muted);text-align:center;padding:5px 10px 20px}
+@media(min-width:600px){main{padding:18px 20px 90px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card{padding:18px}}
+</style>
+</head>
+<body>
+<header><div class="headerrow"><div><div class="brand">GainTrack <span style="font-weight:400">✦</span></div><div class="tag">Your personal nutrition & muscle-gain tracker</div></div><div class="badge">30-DAY JOURNEY</div></div></header>
+<main>
+<div class="datebar"><span id="todayLabel">Today</span><span>Local data on this device</span></div>
+<div class="tabs">
+<button class="tab active" data-tab="dashboard">Dashboard</button><button class="tab" data-tab="add">Add food</button><button class="tab" data-tab="weight">Weight log</button><button class="tab" data-tab="settings">Goals & data</button>
+</div>
+<section id="dashboard" class="panel active">
+<div class="card">
+<h2>Today's progress</h2>
+<div class="grid">
+<div class="stat"><div class="label">Calories eaten</div><div class="value"><span id="calNow">0</span></div><div class="sub">of <span id="calGoalLabel">2700</span> kcal</div><div class="progress"><div class="bar kcalbar" id="calBar"></div></div></div>
+<div class="stat"><div class="label">Protein eaten</div><div class="value"><span id="proNow">0</span><small style="font-size:12px"> g</small></div><div class="sub">of <span id="proGoalLabel">110</span> g</div><div class="progress"><div class="bar proteinbar" id="proBar"></div></div></div>
+<div class="stat"><div class="label">Carbs</div><div class="value"><span id="carbNow">0</span><small style="font-size:12px"> g</small></div><div class="sub">estimated total</div></div>
+<div class="stat"><div class="label">Fat</div><div class="value"><span id="fatNow">0</span><small style="font-size:12px"> g</small></div><div class="sub">estimated total</div></div>
+</div>
+<div id="goalMessage" class="note" style="margin-top:12px">Add your first meal to start tracking.</div>
+</div>
+<div class="card"><h2>Today's food diary</h2><div id="mealList"></div><button class="secondary" style="width:100%;margin-top:10px" onclick="showTab('add')">＋ Add a meal</button></div>
+<div class="card"><h2>Quick reminder</h2><div class="note">Photo-based calorie estimates are approximate. Enter the food name and portion size, and correct the estimate when you know the ingredients, oil, or cooked quantity. Your daily target is a starting estimate and can be adjusted based on your weekly average weight.</div></div>
+</section>
+<section id="add" class="panel">
+<div class="card">
+<h2>Add a meal or drink</h2>
+<label for="photo">Meal photo (optional)</label><input id="photo" type="file" accept="image/*" capture="environment"><img id="preview" class="foodpreview" alt="Food preview">
+<label for="food">What did you eat or drink?</label>
+<input id="food" list="foodOptions" placeholder="e.g. dal, rice, 2 eggs, sattu">
+<datalist id="foodOptions"></datalist>
+<div class="row">
+<div><label for="portion">Portion</label><input id="portion" type="number" min="0.1" step="0.1" value="1"></div>
+<div><label for="unit">Unit</label><select id="unit"><option value="serving">serving / portion</option><option value="g">grams (g)</option><option value="ml">millilitres (ml)</option><option value="piece">piece</option><option value="bowl">bowl</option><option value="roti">roti</option></select></div>
+</div>
+<label for="details">Extra details (optional)</label><textarea id="details" placeholder="e.g. 1 medium bowl, homemade, 1 tsp oil, no sugar"></textarea>
+<div class="row">
+<div><label for="calories">Calories (kcal)</label><input id="calories" type="number" min="0" placeholder="Estimate"></div>
+<div><label for="protein">Protein (g)</label><input id="protein" type="number" min="0" placeholder="Estimate"></div>
+</div>
+<div class="row">
+<div><label for="carbs">Carbohydrates (g)</label><input id="carbs" type="number" min="0" placeholder="Optional"></div>
+<div><label for="fat">Fat (g)</label><input id="fat" type="number" min="0" placeholder="Optional"></div>
+</div>
+<div class="note" style="margin-top:8px">Choose a common food below to fill a rough estimate automatically. If the food is mixed or the portion is different, adjust the numbers. This starter version does not automatically identify food from the photo; it stores the photo and uses your food description and quantities to estimate nutrition.</div>
+<button class="primary" onclick="addMeal()">Save meal to today's diary</button>
+<button class="secondary" onclick="clearFoodForm()" style="width:100%;margin-top:8px">Clear form</button>
+</div>
+<div class="card"><h2>Common foods (rough estimates)</h2><div id="foodReference" class="note"></div></div>
+</section>
+<section id="weight" class="panel">
+<div class="card"><h2>Weight log</h2><div class="row"><div><label for="weightDate">Date</label><input type="date" id="weightDate"></div><div><label for="weightValue">Morning weight (kg)</label><input type="number" id="weightValue" min="20" max="300" step="0.05" placeholder="60.25"></div></div><button class="primary" onclick="saveWeight()">Save weight</button><div id="weightList" style="margin-top:12px"></div><div id="weightSummary" class="note" style="margin-top:10px"></div></div>
+<div class="card"><h2>How to weigh consistently</h2><div class="note">Weigh after using the toilet, before eating or drinking, at roughly the same time. Day-to-day changes often reflect water and food in your digestive system. Compare 7-day averages instead of reacting to a single reading.</div></div>
+</section>
+<section id="settings" class="panel">
+<div class="card"><h2>Your goals</h2><div class="row"><div><label for="calGoal">Daily calories (kcal)</label><input id="calGoal" type="number" min="1000" max="6000" step="50" value="2700"></div><div><label for="proteinGoal">Daily protein (g)</label><input id="proteinGoal" type="number" min="30" max="250" step="5" value="110"></div></div><div class="row"><div><label for="currentWeight">Current weight (kg)</label><input id="currentWeight" type="number" min="20" max="300" step="0.05" value="60.25"></div><div><label for="targetWeight">Initial target weight (kg)</label><input id="targetWeight" type="number" min="20" max="300" step="0.1" value="62"></div></div><button class="primary" onclick="saveGoals()">Save goals</button><p class="note">Starting estimate: 2,700 kcal and 110 g protein daily. These are not medical prescriptions; adjust based on your 7-day weight trend, appetite, activity and progress.</p></div>
+<div class="card"><h2>Export or reset</h2><button class="secondary" style="width:100%" onclick="exportCSV()">Download food & weight log (CSV)</button><button class="danger" style="width:100%;margin-top:9px" onclick="resetAll()">Delete all app data from this browser</button><p class="note">Your entries are saved in this browser on this device. Clearing browser data or using a different device may remove or hide them. Export regularly if you want a backup.</p></div>
+</section>
+</main>
+<footer>GainTrack • Estimates only, not medical advice • Keep eating enough to support daily farm work and recovery.</footer>
+<script>
+const FOOD_DB = [
+ {name:"Sattu drink (50 g sattu, water)",unit:"serving",cal:190,p:10,c:30,f:4},
+ {name:"Boiled egg",unit:"piece",cal:78,p:6.3,c:.6,f:5.3},
+ {name:"Banana (medium)",unit:"piece",cal:105,p:1.3,c:27,f:.4},
+ {name:"Roti (medium)",unit:"roti",cal:110,p:3.2,c:22,f:1.5},
+ {name:"Cooked rice (1 bowl ~150 g)",unit:"bowl",cal:195,p:4,c:43,f:.4},
+ {name:"Dal (1 bowl ~150 g)",unit:"bowl",cal:160,p:9,c:25,f:3},
+ {name:"Vegetable sabzi (1 bowl)",unit:"bowl",cal:120,p:3,c:14,f:6},
+ {name:"Milk (250 ml, toned)",unit:"ml",cal:.6,p:.032,c:.048,f:.02},
+ {name:"Curd / yogurt (100 g)",unit:"g",cal:.6,p:.035,c:.045,f:.03},
+ {name:"Paneer (100 g)",unit:"g",cal:265,p:.18,c:.02,f:.2},
+ {name:"Soy chunks (dry, 50 g)",unit:"serving",cal:173,p:26,c:16,f:.5},
+ {name:"Roasted chana (50 g)",unit:"serving",cal:190,p:10,c:30,f:3},
+ {name:"Peanuts (30 g)",unit:"serving",cal:170,p:7.5,c:5,f:14},
+ {name:"Samosa (medium)",unit:"piece",cal:260,p:5,c:30,f:14},
+ {name:"Rasgulla (1 piece)",unit:"piece",cal:125,p:2,c:25,f:2},
+ {name:"Oats (50 g dry)",unit:"serving",cal:190,p:6.5,c:32,f:3.5},
+ {name:"Apple (medium)",unit:"piece",cal:95,p:.5,c:25,f:.3},
+ {name:"Sugar (10 g)",unit:"serving",cal:40,p:0,c:10,f:0}
+];
+const $ = id => document.getElementById(id);
+const key = "gaintrack_v1";
+let state = loadState();
+let photoData = "";
+function today(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+function loadState(){try{return JSON.parse(localStorage.getItem(key))||{meals:[],weights:[],goals:{cal:2700,protein:110,current:60.25,target:62}}}catch(e){return {meals:[],weights:[],goals:{cal:2700,protein:110,current:60.25,target:62}}}}
+function saveState(){localStorage.setItem(key,JSON.stringify(state));}
+function showTab(id){document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===id));document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));window.scrollTo({top:0,behavior:"smooth"});}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+$("todayLabel").textContent = new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
+$("weightDate").value=today();
+function fillFoodUI(){
+ const dl=$("foodOptions"); FOOD_DB.forEach(f=>{let o=document.createElement("option");o.value=f.name;dl.appendChild(o)});
+ $("foodReference").innerHTML=FOOD_DB.map(f=>`<div style="margin:5px 0"><b>${f.name}</b> — ${Math.round(f.cal*(f.unit==="g"||f.unit==="ml"?100:1))} kcal reference${f.unit==="g"||f.unit==="ml"?" per 100 g/ml":""}, ${Math.round(f.p*(f.unit==="g"||f.unit==="ml"?100:1)*10)/10} g protein</div>`).join("");
+}
+$("food").addEventListener("change",autoEstimate);
+$("unit").addEventListener("change",autoEstimate);
+$("portion").addEventListener("input",autoEstimate);
+function autoEstimate(){
+ const name=$("food").value, f=FOOD_DB.find(x=>x.name.toLowerCase()===name.toLowerCase());
+ if(!f)return;
+ const unit=$("unit").value;
+ let factor=Number($("portion").value)||1;
+ // Reference foods with g/ml units are per 1 g or ml in DB; other items per serving/piece/bowl/roti.
+ if(f.unit==="g"||f.unit==="ml"){
+   if(unit!=="g"&&unit!=="ml"){factor=Number($("portion").value)||1;factor*=100;}
+ } else if(unit==="g"||unit==="ml"){factor=(Number($("portion").value)||1)/100;}
+ $("calories").value=Math.round(f.cal*factor);
+ $("protein").value=Math.round(f.p*factor*10)/10;
+ $("carbs").value=Math.round(f.c*factor*10)/10;
+ $("fat").value=Math.round(f.f*factor*10)/10;
+}
+$("photo").addEventListener("change", e=>{
+ const file=e.target.files&&e.target.files[0]; if(!file){photoData="";$("preview").style.display="none";return;}
+ const reader=new FileReader(); reader.onload=()=>{photoData=reader.result;$("preview").src=photoData;$("preview").style.display="block";}; reader.readAsDataURL(file);
+});
+function addMeal(){
+ const name=$("food").value.trim(); const cal=Number($("calories").value), protein=Number($("protein").value);
+ if(!name){alert("Please enter the food or drink name.");return;}
+ if($("calories").value===""||$("protein").value===""){alert("Please enter or estimate calories and protein. Use a common-food suggestion if available.");return;}
+ const entry={id:Date.now(),date:today(),time:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}),name,portion:$("portion").value,unit:$("unit").value,details:$("details").value.trim(),cal,protein,carbs:Number($("carbs").value)||0,fat:Number($("fat").value)||0,photo:photoData};
+ state.meals.push(entry);saveState();clearFoodForm();render();showTab("dashboard");
+}
+function clearFoodForm(){["food","details","calories","protein","carbs","fat"].forEach(id=>$(id).value="");$("portion").value="1";$("unit").value="serving";$("photo").value="";$("preview").style.display="none";photoData="";}
+function deleteMeal(id){if(confirm("Delete this meal entry?")){state.meals=state.meals.filter(m=>m.id!==id);saveState();render();}}
+function render(){
+ const todays=state.meals.filter(m=>m.date===today());
+ const sum=k=>todays.reduce((s,m)=>s+(Number(m[k])||0),0);
+ const cal=sum("cal"),pro=sum("protein"),carb=sum("carbs"),fat=sum("fat");
+ $("calNow").textContent=Math.round(cal);$("proNow").textContent=Math.round(pro);$("carbNow").textContent=Math.round(carb);$("fatNow").textContent=Math.round(fat);
+ $("calGoalLabel").textContent=state.goals.cal;$("proGoalLabel").textContent=state.goals.protein;
+ $("calBar").style.width=Math.min(100,cal/state.goals.cal*100)+"%";$("proBar").style.width=Math.min(100,pro/state.goals.protein*100)+"%";
+ $("goalMessage").textContent=cal===0?"Add your first meal to start tracking.":`Calories: ${Math.max(0,Math.round(state.goals.cal-cal))} kcal left. Protein: ${Math.max(0,Math.round(state.goals.protein-pro))} g left. Estimates depend on portion size and preparation.`;
+ const list=$("mealList");
+ if(!todays.length){list.innerHTML='<div class="empty">No meals logged today yet.<br>Add a food photo and details to begin.</div>';}
+ else{list.innerHTML=todays.slice().reverse().map(m=>`<div class="meal">${m.photo?`<img class="thumb" src="${m.photo}" alt="Food">`:`<div class="thumb" style="display:grid;place-items:center;font-size:22px">🍽️</div>`}<div class="mealbody"><div class="mealname">${escapeHtml(m.name)}</div><div class="meta">${m.time} · ${escapeHtml(m.portion)} ${escapeHtml(m.unit)}${m.details?" · "+escapeHtml(m.details):""}</div><span class="pill">${Math.round(m.cal)} kcal</span><span class="pill">${Math.round(m.protein*10)/10} g protein</span><div class="mealactions"><button class="danger" onclick="deleteMeal(${m.id})">Delete</button></div></div></div>`).join("");}
+ renderWeights();
+ $("calGoal").value=state.goals.cal;$("proteinGoal").value=state.goals.protein;$("currentWeight").value=state.goals.current;$("targetWeight").value=state.goals.target;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function saveGoals(){
+ const cal=Number($("calGoal").value),protein=Number($("proteinGoal").value),current=Number($("currentWeight").value),target=Number($("targetWeight").value);
+ if(cal<1000||protein<30||current<=0||target<=0){alert("Please enter valid goal values.");return;}
+ state.goals={cal,protein,current,target};saveState();render();alert("Goals saved.");
+}
+function saveWeight(){
+ const date=$("weightDate").value||today(),value=Number($("weightValue").value);
+ if(!value||value<20||value>300){alert("Please enter a valid weight in kg.");return;}
+ const old=state.weights.findIndex(w=>w.date===date);
+ const entry={date,value};if(old>=0)state.weights[old]=entry;else state.weights.push(entry);
+ state.weights.sort((a,b)=>a.date.localeCompare(b.date));state.goals.current=value;saveState();$("weightValue").value="";renderWeights();
+}
+function renderWeights(){
+ const list=$("weightList");
+ const arr=state.weights.slice().sort((a,b)=>b.date.localeCompare(a.date));
+ if(!arr.length){list.innerHTML='<div class="empty">No weights recorded yet.</div>';$("weightSummary").textContent="Your current reference weight is "+state.goals.current+" kg.";return;}
+ list.innerHTML=arr.slice(0,30).map(w=>`<div class="weightentry"><span>${w.date}</span><b>${w.value.toFixed(2)} kg</b><button class="danger" onclick="deleteWeight('${w.date}')">Delete</button></div>`).join("");
+ const last7=state.weights.slice(-7);const avg=last7.reduce((s,w)=>s+w.value,0)/last7.length;
+ $("weightSummary").textContent=`Latest entry: ${arr[0].value.toFixed(2)} kg. Average of last ${last7.length} recorded weigh-in(s): ${avg.toFixed(2)} kg. More data points make the trend more useful.`;
+}
+function deleteWeight(date){state.weights=state.weights.filter(w=>w.date!==date);saveState();renderWeights();}
+function exportCSV(){
+ let lines=["type,date,time,name,portion,unit,calories_kcal,protein_g,carbs_g,fat_g,details,weight_kg"];
+ state.meals.forEach(m=>lines.push(["meal",m.date,m.time,`"${String(m.name).replace(/"/g,'""')}"`,m.portion,m.unit,m.cal,m.protein,m.carbs,m.fat,`"${String(m.details).replace(/"/g,'""')}"`,""].join(",")));
+ state.weights.forEach(w=>lines.push(["weight",w.date,"","","","","","","","","",w.value].join(",")));
+ const blob=new Blob([lines.join("\n")],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="gaintrack_log.csv";a.click();URL.revokeObjectURL(url);
+}
+function resetAll(){if(confirm("This will delete all meal photos, meal logs, weight entries and goals saved by this app in this browser. Continue?")){localStorage.removeItem(key);state=loadState();render();alert("App data cleared.");}}
+fillFoodUI();render();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+</body>
+</html>
